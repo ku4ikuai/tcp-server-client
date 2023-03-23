@@ -14,5 +14,9 @@ https://github.com/riba2534/TCP-IP-NetworkNote
 - 服务器端将接受的字符串数据传回客户端，即「回声」
 - 服务器端与客户端之间的字符串回声一直执行到客户端输入 Q 为止。
 
+### 2、ch echo-mp 多进程
+
+### 3、ch echo-select select io复用
+
   
 
