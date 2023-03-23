@@ -49,10 +49,11 @@ int main()
         {
             close(serv_socket);
             char buffer[1024];
-            while(recv(clnt_socket,buffer,sizeof(buffer),0) > 0)
+            int len = 0 ;
+            while((len = recv(clnt_socket,buffer,sizeof(buffer),0))> 0)
             {
                 cout << "\n[get buffer] " << buffer << endl;
-                send(clnt_socket,buffer,sizeof(buffer),0);
+                send(clnt_socket,buffer,sizeof(len),0);
             }
             close(clnt_socket);
             return 0;

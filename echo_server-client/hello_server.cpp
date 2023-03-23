@@ -26,12 +26,13 @@ int main()
         if(clnt_socket != 0) cout << "\n[get connect]" << inet_ntoa(clnt_addr.sin_addr) << " port:" << ntohs(clnt_addr.sin_port)<<endl;
 
         char buffer[1024];
-        while(recv(clnt_socket,buffer,sizeof(buffer),0))
+        int len;
+        while((len = recv(clnt_socket,buffer,sizeof(buffer),0)) != 0)
         {
             cout << "\n[get buffer] " << buffer << endl;
-            send(clnt_socket,buffer,sizeof(buffer),0);
+            send(clnt_socket,buffer,len,0);
         }
-       
+        
         close(clnt_socket);
         cnt++;
     }
