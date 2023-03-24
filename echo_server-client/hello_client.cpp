@@ -41,7 +41,7 @@ int main()
             cout << "shut down!\n";
             return 0;
         }
-        cout << strlen(send_buffer) << endl;
+        
         send(sock,send_buffer,strlen(send_buffer)+1,0);
 
         char recv_buffer[1024];
