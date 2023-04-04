@@ -38,11 +38,14 @@ int main()
 
     bind(serv_socket,(sockaddr *)&serv_addr,sizeof(serv_addr));
     listen(serv_socket,5);
-    int cnt = 0;
-    while(cnt != 5)
+    
+    while(1)
     {
         clnt_socket = accept(serv_socket,(sockaddr *)&clnt_addr,&clnt_addr_len);
-        if(clnt_socket != 0) cout << "\n[get connect]" << inet_ntoa(clnt_addr.sin_addr) << " port:" << ntohs(clnt_addr.sin_port)<<endl;
+        if(clnt_socket == -1)
+            continue;
+        else 
+            cout << "\n[get connect]" << inet_ntoa(clnt_addr.sin_addr) << " port:" << ntohs(clnt_addr.sin_port)<<endl;
 
         pid_t pid = fork();
         if(pid == 0) // 子进程
@@ -56,6 +59,7 @@ int main()
                 send(clnt_socket,buffer,sizeof(len),0);
             }
             close(clnt_socket);
+            cout << "client shut down!" << endl;
             return 0;
         }
         else if(pid > 0) // 父进程
@@ -63,7 +67,6 @@ int main()
             close(clnt_socket);
         }
         
-        cnt++;
     }
     close(serv_socket);
     

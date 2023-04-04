@@ -1,0 +1,86 @@
+#include <iostream>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include<signal.h>
+using namespace std;
+
+const int BUF_SIZE = 1024;
+
+void write_childproc(int sig)
+{
+    int status;
+    pid_t pid = waitpid(-1,&status,WNOHANG);
+    if(WIFEXITED(status))
+    {
+        cout << "Removed proc id :" << pid << endl;
+        cout << "Child send:" << WEXITSTATUS(status) << endl;
+    }
+}
+
+int main()
+{
+    int sock;
+    struct sockaddr_in sock_addr;
+    pid_t pid;
+
+    struct sigaction act;
+    act.sa_handler = write_childproc;
+    sigemptyset(&act.sa_mask);
+    act.sa_flags = 0;
+    sigaction(SIGCHLD,&act,0);
+
+    sock = socket(PF_INET,SOCK_STREAM,0);
+    if(sock == -1) 
+    {
+        cout << "socket error" << endl;
+        exit(1);
+    }
+    memset(&sock_addr,0,sizeof(sock_addr));
+    sock_addr.sin_family = AF_INET;
+    sock_addr.sin_addr.s_addr = htonl(INADDR_ANY); //0.0.0.0 表示不确定地址，或所有地址、任意地址
+    sock_addr.sin_port = htons(8888);
+    
+    if(connect(sock,(sockaddr *)&sock_addr,sizeof(sock_addr)) == -1)
+    {
+        cout << "connect error" << endl;
+        exit(1);
+    }
+    else 
+        cout << "connected...." << endl;
+
+    
+    pid = fork();
+    if(pid == 0) // 子进程写
+    {
+        while(1)
+        {
+            char send_buffer[1024];
+            cout << "Input message(Q to quit) :";
+            cin >> send_buffer;
+            if(send_buffer[0] == 'Q')
+            {
+                shutdown(sock,SHUT_WR);  // 断开输出流，断开输出流时向主机传输EOF
+                cout << "shut down!\n";
+                return 0;
+            }
+            send(sock,send_buffer,strlen(send_buffer)+1,0);
+            sleep(1);
+        }
+    }
+    else if(pid >0) // 父进程读
+    {
+        while(1)
+        {
+            char recv_buffer[1024];
+            int len = recv(sock,recv_buffer,BUF_SIZE-1,0);
+            if(len <= 0) return 0;
+            cout << "\n[get buffer]" << recv_buffer << endl;
+        }
+        
+    }
+
+    close(sock);
+    
+    return 0 ;
+}
