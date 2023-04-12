@@ -18,6 +18,9 @@ https://github.com/riba2534/TCP-IP-NetworkNote
 
 ​	基于多进程实现的并发的回声服务器的服务端。
 
+   - Echo_mpserv   fork 子进程 recv数据。
+   - echo_mpclient  fork 子进程 send数据。父进程 读数据 实现io分离。
+
 ### 3、ch12 echo-select select io复用
 
 缺点：第 12 章实现了基于 select 的 I/O 复用技术服务端，其中有不合理的设计如下：
