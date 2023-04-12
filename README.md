@@ -20,6 +20,8 @@ https://github.com/riba2534/TCP-IP-NetworkNote
 
    - Echo_mpserv   fork 子进程 recv数据。
    - echo_mpclient  fork 子进程 send数据。父进程 读数据 实现io分离。
+   - echo_store 添加功能，服务器端保存回声数据到文件中。
+     - 使用单向管道通信，fork一个新进程与服务器端提供回声服务的进程进行通信。
 
 ### 3、ch12 echo-select select io复用
 
